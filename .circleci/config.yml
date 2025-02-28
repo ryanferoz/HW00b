@@ -20,11 +20,11 @@ jobs:
 
       - run:
           name: Run GitHub API Script
-          command: python github.py # Runs github.py script
+          command: cd GitHubApi567-hw4a && python github.py # Runs github.py script
 
       - run:
           name: Run Unit Tests
-          command: python -m unittest discover # Runs all tests in testgithub.py
+          command: cd GitHubApi567-hw4a && python -m unittest discover # Runs all tests in .py
 
 # Define workflows to orchestrate job execution
 workflows:
