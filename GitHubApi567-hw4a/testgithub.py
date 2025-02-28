@@ -1,48 +1,57 @@
-#Ryan Feroz SSW567 HW04a
+#Ryan Feroz SSW567 HW04c
 import unittest
 from unittest.mock import patch
 import github
+class TestGitHubAPI(unittest.TestCase):
 
-class TestGitHub(unittest.TestCase):
-
-    @patch('requests.get')
-    def test_get_repos_success(self, mock_get):
-        """Test fetching repositories successfully."""
+    @patch('github.requests.get')
+    def test_get_repos(self, mock_get):
+        """Test fetching user repositories"""
         mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = [{"name": "Repo1"}, {"name": "Repo2"}]
-        self.assertEqual(github.get_repos("testuser"), ["Repo1", "Repo2"])
+        mock_get.return_value.json.return_value = [
+            {"name": "Repo1"},
+            {"name": "Repo2"}
+        ]
 
-    @patch('requests.get')
-    def test_get_commit_count_success(self, mock_get):
-        """Test fetching commit count successfully."""
+        repos = github.get_repos("testuser")
+        self.assertEqual(repos, ["Repo1", "Repo2"])
+
+    @patch('github.requests.get')
+    def test_get_commit_count(self, mock_get):
+        """Test fetching commit count for a repo"""
         mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = [{}] * 5  #5 commits
-        self.assertEqual(github.get_commit_count("testuser", "Repo1"), 5)
+        mock_get.return_value.json.return_value = [{}, {}, {}]  #Mock 3 commits
 
-    @patch('requests.get')
+        commit_count = github.get_commit_count("testuser", "Repo1")
+        self.assertEqual(commit_count, 3)
+
+    @patch('github.requests.get')
     def test_get_repo_commit_info(self, mock_get):
-        """Test overall function for fetching repo commit info."""
-        def side_effect(url):
-            """Mock API responses based on URL."""
-            if url == "https://api.github.com/users/testuser/repos":
-                mock_response = unittest.mock.Mock()
-                mock_response.status_code = 200
-                mock_response.json.return_value = [{"name": "Repo1"}]  #Return repo list
-                return mock_response
-            elif url == "https://api.github.com/repos/testuser/Repo1/commits":
-                mock_response = unittest.mock.Mock()
-                mock_response.status_code = 200
-                mock_response.json.return_value = [{}] * 3  #Simulate 3 commits
-                return mock_response
-            else:
-                mock_response = unittest.mock.Mock()
-                mock_response.status_code = 404  #Simulating not found
-                return mock_response
+        """Test overall function for fetching repo commit info"""
 
-        mock_get.side_effect = side_effect
+        def mock_response(url, *args, **kwargs):
+            if url == "https://api.github.com/users/testuser/repos":
+                return MockResponse([
+                    {"name": "Repo1"}
+                ], 200)
+            elif url == "https://api.github.com/repos/testuser/Repo1/commits":
+                return MockResponse([{}, {}, {}], 200)  #3 commits
+            return MockResponse(None, 404)
+
+        mock_get.side_effect = mock_response
+
         expected = ["Repo: Repo1 # of commits: 3"]
         self.assertEqual(github.get_repo_commit_info("testuser"), expected)
 
+class MockResponse:
+    """Mock Response class for simulating API responses"""
+    def __init__(self, json_data, status_code):
+        self.json_data = json_data
+        self.status_code = status_code
 
-if __name__ == "__main__":
+    def json(self):
+        return self.json_data
+
+if __name__ == '__main__':
     unittest.main()
+

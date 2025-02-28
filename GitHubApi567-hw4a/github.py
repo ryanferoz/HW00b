@@ -1,6 +1,5 @@
 #Ryan Feroz SSW567 HW04a
 import requests
-import json
 
 def get_repos(user_id):
     """Fetch the list of repositories for a given user."""
