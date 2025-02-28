@@ -20,7 +20,7 @@ jobs:
 
       - run:
           name: Run Unit Tests
-          command: cd GitHubApi567-hw4a && python -m unittest discover # Runs all tests in .py
+          command: cd GitHubApi567-hw4c && python -m unittest discover # Runs all tests in .py
 
 # Define workflows to orchestrate job execution
 workflows:
