@@ -1,6 +1,4 @@
 #Ryan Feroz SSW567 HW04a
-import json
-import requests
 import unittest
 from unittest.mock import patch
 import github
