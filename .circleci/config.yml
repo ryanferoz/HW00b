@@ -19,10 +19,6 @@ jobs:
             pip install -r .circleci/requirements.txt  # Ensure you have this file
 
       - run:
-          name: Run GitHub API Script
-          command: cd GitHubApi567-hw4a && python github.py # Runs github.py script
-
-      - run:
           name: Run Unit Tests
           command: cd GitHubApi567-hw4a && python -m unittest discover # Runs all tests in .py
 
