@@ -1,7 +1,9 @@
 #Ryan Feroz SSW567 HW04c
+
 import unittest
 from unittest.mock import patch
 import github
+
 class TestGitHubAPI(unittest.TestCase):
 
     @patch('github.requests.get')
@@ -54,4 +56,3 @@ class MockResponse:
 
 if __name__ == '__main__':
     unittest.main()
-
